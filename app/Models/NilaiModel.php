@@ -64,4 +64,24 @@ class NilaiModel extends Model
         }
         return parent::update($id, $data);
     }
+
+    public function getNilaiDetailById($id)
+{
+    return $this->db->table('nilai')
+        ->select('
+            nilai.*,
+            mahasiswa.nim,
+            mahasiswa.nama AS nama_mahasiswa,
+            mahasiswa.jurusan,
+            matakuliah.kode_mk,
+            matakuliah.nama_mk,
+            matakuliah.sks
+        ')
+        ->join('mahasiswa', 'mahasiswa.id = nilai.mahasiswa_id')
+        ->join('matakuliah', 'matakuliah.id = nilai.matakuliah_id')
+        ->where('nilai.id', $id)
+        ->get()
+        ->getRowArray();
+}
+
 }

@@ -59,24 +59,25 @@ class NilaiController extends BaseController
     }
 
     public function edit($id)
-    {
-        if (!session()->get('logged_in')) {
-            return redirect()->to('/login');
+        {
+            if (!session()->get('logged_in')) {
+                return redirect()->to('/login');
+            }
+
+            $nilai = $this->nilaiModel->getNilaiDetailById($id);
+
+            if (!$nilai) {
+                throw new \CodeIgniter\Exceptions\PageNotFoundException('Nilai tidak ditemukan');
+            }
+
+            return view('nilai/edit', [
+                'title'      => 'Edit Nilai',
+                'nilai'      => $nilai,
+                'mahasiswa'  => $this->mahasiswaModel->findAll(),
+                'matakuliah' => $this->matakuliahModel->findAll(),
+            ]);
         }
-        
-        $data = [
-            'title' => 'Edit Nilai',
-            'nilai' => $this->nilaiModel->find($id),
-            'mahasiswa' => $this->mahasiswaModel->findAll(),
-            'matakuliah' => $this->matakuliahModel->findAll(),
-        ];
-        
-        if (!$data['nilai']) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException('Nilai tidak ditemukan');
-        }
-        
-        return view('nilai/edit', $data);
-    }
+
 
     public function update($id)
     {
